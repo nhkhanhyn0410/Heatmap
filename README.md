@@ -151,28 +151,34 @@ VITE_API_URL=http://localhost:5000/api
 
 ### Cách 1: Sử dụng Management Script (Khuyến nghị) 🎯
 
-Script `manage.py` giúp quản lý dự án dễ dàng hơn với logging và process management.
+Script `manage.py` là interactive shell đơn giản để quản lý cả backend và frontend.
 
 ```bash
-# Cài đặt dependencies
-python manage.py install
+# Chạy script
+python manage.py
 
-# Khởi động tất cả (backend + frontend)
-python manage.py start
+# Interactive shell sẽ hiển thị
+=======================================================
+🧭 PRODUCTIVITY TRACKER - PROJECT MANAGER
+=======================================================
+📝 Lệnh:
+   start   - Khởi động projects
+   stop    - Dừng projects
+   status  - Xem trạng thái
+   exit    - Thoát
+=======================================================
 
-# Kiểm tra trạng thái
-python manage.py status
-
-# Dừng tất cả
-python manage.py stop
-
-# Xem logs
-python manage.py logs backend
-python manage.py logs frontend
-
-# Xem tất cả lệnh
-python manage.py help
+➤ start     # Khởi động cả backend + frontend
+➤ status    # Kiểm tra trạng thái
+➤ stop      # Dừng tất cả
+➤ exit      # Thoát (tự động stop)
 ```
+
+**Features:**
+- ✅ Tự động phát hiện npm scripts
+- ✅ Cross-platform (Windows, Mac, Linux)
+- ✅ Graceful shutdown
+- ✅ Process management
 
 **Chi tiết:** Xem [MANAGE_GUIDE.md](MANAGE_GUIDE.md)
 

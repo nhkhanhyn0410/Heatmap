@@ -2,13 +2,11 @@
 
 ## Tổng quan
 
-`manage.py` là công cụ quản lý dự án tích hợp, giúp bạn dễ dàng:
-- ✅ Khởi động/dừng backend và frontend
-- ✅ Quản lý process với PID tracking
-- ✅ Xem logs real-time với màu sắc đẹp mắt
-- ✅ Cài đặt dependencies
-- ✅ Dọn dẹp build files
+`manage.py` là công cụ interactive shell đơn giản để quản lý dự án, giúp bạn:
+- ✅ Khởi động/dừng backend và frontend cùng lúc
 - ✅ Kiểm tra trạng thái services
+- ✅ Tự động phát hiện npm scripts từ package.json
+- ✅ Cross-platform support (Windows, Mac, Linux)
 
 ---
 
@@ -21,384 +19,156 @@
 
 ## 🎯 Quick Start
 
-### Cài đặt dependencies
+### Khởi động
+
 ```bash
-python manage.py install
+python manage.py
 ```
 
-### Khởi động tất cả
-```bash
-python manage.py start
+Bạn sẽ thấy interactive shell:
+
+```
+=======================================================
+🧭 PRODUCTIVITY TRACKER - PROJECT MANAGER
+=======================================================
+📝 Lệnh:
+   start   - Khởi động projects
+   stop    - Dừng projects
+   status  - Xem trạng thái
+   exit    - Thoát
+=======================================================
+
+➤
 ```
 
-### Kiểm tra trạng thái
-```bash
-python manage.py status
-```
+### Sử dụng
 
-### Dừng tất cả
-```bash
-python manage.py stop
+```
+➤ start          # Khởi động backend + frontend
+➤ status         # Kiểm tra trạng thái
+➤ stop           # Dừng tất cả
+➤ exit           # Thoát (tự động dừng processes)
 ```
 
 ---
 
 ## 📚 Commands Reference
 
-### 1. `start` - Khởi động services
+### 1. `start` - Khởi động projects
 
-**Syntax:**
-```bash
-python manage.py start [target]
+**Cách dùng:**
 ```
-
-**Targets:**
-- `all` (default) - Khởi động cả backend và frontend
-- `backend` - Chỉ khởi động backend
-- `frontend` - Chỉ khởi động frontend
-
-**Examples:**
-```bash
-# Khởi động tất cả
-python manage.py start
-python manage.py start all
-
-# Chỉ khởi động backend
-python manage.py start backend
-
-# Chỉ khởi động frontend
-python manage.py start frontend
+➤ start
 ```
 
 **Output:**
 ```
-============================================================
-                    Starting Services
-============================================================
+🚀 Đang khởi động projects...
 
-[INFO] Starting backend server...
-[SUCCESS] Backend started with PID 12345
-[INFO] Logs: /path/to/logs/backend_20251101_143022.log
+▶  Backend: npm run dev
+▶  Frontend: npm run dev
 
-[INFO] Starting frontend server...
-[SUCCESS] Frontend started with PID 12346
-[INFO] Logs: /path/to/logs/frontend_20251101_143024.log
-
-============================================================
-                     Service Status
-============================================================
-
-[SUCCESS] Backend: Running (PID 12345)
-[SUCCESS] Frontend: Running (PID 12346)
-[INFO] Backend URL: http://localhost:5000
-[INFO] Frontend URL: http://localhost:5173
-```
-
----
-
-### 2. `stop` - Dừng services
-
-**Syntax:**
-```bash
-python manage.py stop [target]
-```
-
-**Targets:**
-- `all` (default) - Dừng tất cả
-- `backend` - Chỉ dừng backend
-- `frontend` - Chỉ dừng frontend
-
-**Examples:**
-```bash
-# Dừng tất cả
-python manage.py stop
-python manage.py stop all
-
-# Chỉ dừng backend
-python manage.py stop backend
-
-# Chỉ dừng frontend
-python manage.py stop frontend
-```
-
-**Output:**
-```
-[INFO] Stopping backend...
-[SUCCESS] Backend stopped
-
-[INFO] Stopping frontend...
-[SUCCESS] Frontend stopped
-```
-
----
-
-### 3. `restart` - Restart services
-
-**Syntax:**
-```bash
-python manage.py restart [target]
-```
-
-**Targets:** Same as `start` and `stop`
-
-**Examples:**
-```bash
-# Restart tất cả
-python manage.py restart
-
-# Restart chỉ backend
-python manage.py restart backend
+✅ Projects đang chạy!
+   Backend:  http://localhost:5000
+   Frontend: http://localhost:5173
 ```
 
 **Hoạt động:**
-1. Stop service(s)
-2. Wait 1 second
-3. Start service(s)
+- Tự động phát hiện npm script (ưu tiên `dev`, sau đó `start`)
+- Khởi động backend trước, frontend sau
+- Hiển thị URLs sau khi start thành công
+
+**Lưu ý:**
+- Nếu đã chạy rồi, sẽ báo: `⚠️ Projects đang chạy rồi!`
+- Cần dừng trước khi start lại
 
 ---
 
-### 4. `status` - Kiểm tra trạng thái
+### 2. `stop` - Dừng projects
 
-**Syntax:**
-```bash
-python manage.py status
+**Cách dùng:**
+```
+➤ stop
+```
+
+**Output:**
+```
+🛑 Đang dừng...
+
+✔  Backend dừng
+✔  Frontend dừng
+✅ Đã dừng hết.
+```
+
+**Hoạt động:**
+- Graceful termination (Windows: CTRL_BREAK_EVENT, Linux/Mac: terminate)
+- Timeout 3 giây, sau đó force kill
+- Dừng backend trước, frontend sau
+
+**Lưu ý:**
+- Nếu chưa chạy, sẽ báo: `ℹ️ Không có process nào đang chạy.`
+
+---
+
+### 3. `status` - Kiểm tra trạng thái
+
+**Cách dùng:**
+```
+➤ status
 ```
 
 **Output khi đang chạy:**
 ```
-============================================================
-                     Service Status
-============================================================
-
-[SUCCESS] Backend: Running (PID 12345)
-[SUCCESS] Frontend: Running (PID 12346)
-[INFO] Backend URL: http://localhost:5000
-[INFO] Frontend URL: http://localhost:5173
+📊 Trạng thái:
+   Backend:  🟢 Running
+   Frontend: 🟢 Running
 ```
 
 **Output khi đã dừng:**
 ```
-============================================================
-                     Service Status
-============================================================
-
-[ERROR] Backend: Stopped
-[ERROR] Frontend: Stopped
-```
-
----
-
-### 5. `install` - Cài đặt dependencies
-
-**Syntax:**
-```bash
-python manage.py install [target]
-```
-
-**Targets:**
-- `all` (default) - Cài đặt cho cả hai
-- `backend` - Chỉ cài backend dependencies
-- `frontend` - Chỉ cài frontend dependencies
-
-**Examples:**
-```bash
-# Cài đặt tất cả
-python manage.py install
-
-# Chỉ cài backend
-python manage.py install backend
-
-# Chỉ cài frontend
-python manage.py install frontend
+📊 Trạng thái:
+   Backend:  🔴 Stopped
+   Frontend: 🔴 Stopped
 ```
 
 **Hoạt động:**
-- Chạy `npm install` trong thư mục tương ứng
-- Hiển thị progress và errors (nếu có)
+- Check process.poll() để xác định status
+- Real-time status (không cache)
 
 ---
 
-### 6. `logs` - Xem logs
+### 4. `exit` / `quit` / `q` - Thoát
 
-**Syntax:**
-```bash
-python manage.py logs [target]
+**Cách dùng:**
 ```
-
-**Targets:**
-- `backend` (default) - Xem logs backend
-- `frontend` - Xem logs frontend
-
-**Examples:**
-```bash
-# Xem backend logs
-python manage.py logs
-python manage.py logs backend
-
-# Xem frontend logs
-python manage.py logs frontend
+➤ exit
+```
+hoặc
+```
+➤ quit
+```
+hoặc
+```
+➤ q
 ```
 
 **Output:**
 ```
-============================================================
-                      Backend Logs
-============================================================
+🛑 Đang dừng...
 
-[INFO] Reading: /path/to/logs/backend_20251101_143022.log
+✔  Backend dừng
+✔  Frontend dừng
+✅ Đã dừng hết.
 
-============================================================
-
-> backend@1.0.0 dev
-> nodemon server.js
-
-[nodemon] 3.0.2
-[nodemon] to restart at any time, enter `rs`
-[nodemon] watching path(s): *.*
-[nodemon] watching extensions: js,mjs,json
-[nodemon] starting `node server.js`
-🚀 Server running on port 5000
-...
-```
-
----
-
-### 7. `clean` - Dọn dẹp build files
-
-**Syntax:**
-```bash
-python manage.py clean
+👋 Bye!
 ```
 
 **Hoạt động:**
-1. Dừng tất cả services
-2. Xóa `node_modules/` và `dist/` trong backend
-3. Xóa `node_modules/`, `dist/`, `build/` trong frontend
-4. Xóa logs cũ hơn 3 ngày
-5. Xóa file `.pids.json`
+- Tự động stop tất cả processes trước khi thoát
+- Safe shutdown
 
-**Examples:**
-```bash
-python manage.py clean
-```
-
-**Output:**
-```
-============================================================
-                   Cleaning Build Files
-============================================================
-
-[INFO] Stopping backend...
-[SUCCESS] Backend stopped
-[INFO] Stopping frontend...
-[SUCCESS] Frontend stopped
-
-[INFO] Cleaning backend...
-[INFO] Removing /path/to/backend/node_modules
-[INFO] Removing /path/to/backend/dist
-
-[INFO] Cleaning frontend...
-[INFO] Removing /path/to/frontend/node_modules
-[INFO] Removing /path/to/frontend/dist
-
-[INFO] Cleaning old logs...
-[INFO] Removed manage_20251028.log
-
-[SUCCESS] Cleanup completed
-```
-
-**⚠️ Warning:** Bạn sẽ cần chạy `python manage.py install` lại sau khi clean!
-
----
-
-### 8. `help` - Hiển thị hướng dẫn
-
-**Syntax:**
-```bash
-python manage.py help
-```
-
-Hiển thị quick reference của tất cả commands.
-
----
-
-## 🎨 Log System
-
-### Log Files
-
-Tất cả logs được lưu trong thư mục `logs/`:
-
-```
-logs/
-├── backend_20251101_143022.log
-├── frontend_20251101_143024.log
-└── manage_20251101.log
-```
-
-**Naming convention:**
-- Backend/Frontend logs: `{service}_{timestamp}.log`
-- Manage script logs: `manage_{date}.log`
-
-### Log Format
-
-**Console output (với màu sắc):**
-```
-[2025-11-01 14:30:22] [INFO] Starting backend server...
-[2025-11-01 14:30:24] [SUCCESS] Backend started with PID 12345
-[2025-11-01 14:30:25] [WARNING] Backend is already running!
-[2025-11-01 14:30:26] [ERROR] Failed to start backend: ...
-```
-
-**File logs (plain text):**
-```
-[2025-11-01 14:30:22] [INFO] Starting backend server...
-[2025-11-01 14:30:24] [SUCCESS] Backend started with PID 12345
-```
-
-### Log Retention
-
-- Logs cũ hơn **3 ngày** sẽ tự động xóa khi chạy `python manage.py clean`
-- Mỗi lần start service tạo file log mới với timestamp
-
----
-
-## ⚙️ Process Management
-
-### PID Tracking
-
-Script lưu Process IDs trong file `.pids.json`:
-
-```json
-{
-  "backend": 12345,
-  "frontend": 12346
-}
-```
-
-**Vị trí:** `/path/to/Heatmap/.pids.json`
-
-**Mục đích:**
-- Track processes đang chạy
-- Stop processes đúng cách
-- Check service status
-
-### Process Lifecycle
-
-1. **Start:**
-   - Kiểm tra process đã chạy chưa (qua PID)
-   - Nếu chưa chạy, start process mới
-   - Lưu PID vào `.pids.json`
-   - Redirect output vào log file
-
-2. **Stop:**
-   - Đọc PID từ `.pids.json`
-   - Kill process (graceful termination)
-   - Xóa PID khỏi file
-
-3. **Status:**
-   - Đọc PIDs
-   - Kiểm tra xem processes còn chạy không
-   - Hiển thị status
+**Lưu ý:**
+- Có thể dùng Ctrl+C để thoát nhanh
 
 ---
 
@@ -408,121 +178,128 @@ Script lưu Process IDs trong file `.pids.json`:
 
 **Ngày đầu tiên:**
 ```bash
-# 1. Cài dependencies
-python manage.py install
+# 1. Chạy script
+python manage.py
 
-# 2. Khởi động services
-python manage.py start
+# 2. Khởi động
+➤ start
 
-# 3. Kiểm tra status
-python manage.py status
+# 3. Làm việc...
+# Truy cập: http://localhost:5173
+
+# 4. Dừng khi xong
+➤ stop
+
+# 5. Thoát
+➤ exit
 ```
 
 **Mỗi ngày làm việc:**
 ```bash
-# Start
-python manage.py start
-
+python manage.py
+➤ start
 # ... làm việc ...
-
-# Stop khi xong
-python manage.py stop
+➤ exit    # Auto stop
 ```
 
-### Debugging Workflow
-
-**Khi gặp lỗi:**
-```bash
-# 1. Xem logs
-python manage.py logs backend
-python manage.py logs frontend
-
-# 2. Restart service
-python manage.py restart backend
-
-# 3. Kiểm tra status
-python manage.py status
-```
-
-### Update Dependencies
+### Quick Check
 
 ```bash
-# 1. Stop services
-python manage.py stop
-
-# 2. Update package.json (manually)
-
-# 3. Reinstall
-python manage.py install
-
-# 4. Start lại
-python manage.py start
+python manage.py
+➤ status    # Kiểm tra xem có gì đang chạy không
+➤ exit
 ```
 
-### Clean Install
+### Restart
 
 ```bash
-# 1. Clean everything
-python manage.py clean
-
-# 2. Reinstall
-python manage.py install
-
-# 3. Start fresh
-python manage.py start
+python manage.py
+➤ stop
+➤ start
+# Hoặc
+➤ exit
+python manage.py
+➤ start
 ```
+
+---
+
+## 🎨 Features
+
+### Auto-detect npm scripts
+
+Script tự động đọc `package.json` và chọn lệnh phù hợp:
+
+**Priority:**
+1. `npm run dev` (nếu có `dev` script)
+2. `npm start` (nếu có `start` script)
+3. Fallback:
+   - Backend: `node server.js`
+   - Frontend: `npx vite`
+
+**Example package.json:**
+```json
+{
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js"
+  }
+}
+```
+→ Sẽ chạy: `npm run dev`
+
+### Cross-platform Support
+
+**Windows:**
+- Sử dụng `CREATE_NEW_PROCESS_GROUP`
+- Stop bằng `CTRL_BREAK_EVENT`
+
+**Linux/Mac:**
+- Standard subprocess
+- Stop bằng `terminate()`
+
+### Process Management
+
+- **Global variables:** `frontend_process`, `backend_process`
+- **Poll check:** `process.poll()` để check status
+- **Timeout:** 3 giây cho graceful shutdown
+- **Force kill:** Nếu timeout
 
 ---
 
 ## 🐛 Troubleshooting
 
-### Problem: "Backend is already running!"
+### Problem: "Projects đang chạy rồi!"
 
 **Nguyên nhân:** Process đã được start trước đó
 
 **Giải pháp:**
-```bash
-# Option 1: Stop và start lại
-python manage.py stop backend
-python manage.py start backend
-
-# Option 2: Restart
-python manage.py restart backend
+```
+➤ stop
+➤ start
 ```
 
-### Problem: Process không stop được
+### Problem: Process không dừng được
 
-**Nguyên nhân:** PID file bị stale hoặc permission issues
+**Nguyên nhân:** Process bị zombie hoặc permission issues
 
 **Giải pháp:**
 ```bash
-# 1. Xóa PID file
-rm .pids.json
+# Thoát script
+➤ exit
 
-# 2. Manually kill processes
+# Manually kill processes
 # Linux/Mac:
-ps aux | grep "node"
+ps aux | grep node
 kill -9 <PID>
 
 # Windows:
 tasklist | findstr "node"
 taskkill /F /PID <PID>
 
-# 3. Start lại
-python manage.py start
-```
-
-### Problem: Không thấy logs
-
-**Nguyên nhân:** Logs chưa được tạo hoặc đã bị xóa
-
-**Giải pháp:**
-```bash
-# Kiểm tra thư mục logs
-ls -la logs/
-
-# Nếu không có, start lại service
-python manage.py restart
+# Start lại
+python manage.py
+➤ start
 ```
 
 ### Problem: Port already in use
@@ -540,141 +317,299 @@ netstat -ano | findstr :5000
 taskkill /F /PID <PID>
 ```
 
-### Problem: Command not found
+### Problem: "Không tìm thấy backend/frontend"
 
-**Nguyên nhân:** Python hoặc npm chưa được cài
+**Nguyên nhân:** Chạy script ở sai directory
 
 **Giải pháp:**
 ```bash
-# Check Python
-python3 --version
-
-# Check npm
-npm --version
-
-# Nếu chưa có, cài đặt:
-# https://www.python.org/downloads/
-# https://nodejs.org/
+# Phải chạy ở root directory của project
+cd /path/to/Heatmap
+python manage.py
 ```
+
+### Problem: Ctrl+C không hoạt động
+
+**Nguyên nhân:** Processes đang block
+
+**Giải pháp:**
+- Ctrl+C nhiều lần
+- Hoặc force close terminal và manually kill processes
 
 ---
 
 ## 💡 Tips & Tricks
 
-### Shortcut với alias
+### Tip 1: Keep Shell Open
 
-**Linux/Mac (`~/.bashrc` hoặc `~/.zshrc`):**
+Giữ terminal window với manage.py mở để dễ dàng stop/restart:
+```
+➤ start
+# ... làm việc ở terminal khác ...
+➤ stop
+➤ start
+```
+
+### Tip 2: Quick Status Check
+
+```bash
+# Terminal riêng cho quick check
+python manage.py
+➤ status
+➤ exit
+```
+
+### Tip 3: Alias (Optional)
+
+**Linux/Mac (`~/.bashrc` or `~/.zshrc`):**
 ```bash
 alias pm='python manage.py'
-alias pmstart='python manage.py start'
-alias pmstop='python manage.py stop'
-alias pmstatus='python manage.py status'
 ```
 
 **Sử dụng:**
 ```bash
-pm start        # Instead of python manage.py start
-pmstatus        # Instead of python manage.py status
+pm    # Instead of python manage.py
 ```
 
-### Chạy background
+### Tip 4: Background Running
 
-**Linux/Mac:**
-```bash
-# Start và chạy background
-python manage.py start &
+Script chạy foreground, giữ terminal window mở để:
+- Dễ stop khi cần
+- Monitor status
+- Quick restart
 
-# Hoặc sử dụng nohup
-nohup python manage.py start > /dev/null 2>&1 &
+### Tip 5: Error Checking
+
+Nếu start failed, check:
+```
+➤ status    # Xem service nào failed
 ```
 
-### Xem logs real-time
-
-```bash
-# Tail backend logs
-tail -f logs/backend_*.log | grep -E "INFO|ERROR"
-
-# Tail frontend logs
-tail -f logs/frontend_*.log
-```
-
-### Auto-restart on file change
-
-Script đã sử dụng `nodemon` cho backend, tự động restart khi code thay đổi.
+Xem logs trong terminal của backend/frontend để debug
 
 ---
 
 ## 📊 Architecture
 
 ```
-manage.py
-├── ProcessManager
-│   ├── start_backend()
-│   ├── start_frontend()
-│   ├── stop_process()
-│   ├── is_process_running()
-│   ├── load_pids()
-│   └── save_pids()
-├── Logger
-│   ├── info()
-│   ├── success()
-│   ├── warning()
-│   └── error()
-└── Commands
-    ├── start()
-    ├── stop()
-    ├── restart()
-    ├── status()
-    ├── install()
-    ├── logs()
-    ├── clean()
-    └── help()
+manage.py (Interactive Shell)
+│
+├── start_projects()
+│   ├── get_npm_script(backend)
+│   ├── Popen backend process
+│   ├── get_npm_script(frontend)
+│   └── Popen frontend process
+│
+├── stop_projects()
+│   ├── Terminate backend
+│   └── Terminate frontend
+│
+├── check_process_status()
+│   ├── Poll backend
+│   └── Poll frontend
+│
+└── main()
+    ├── Display menu
+    ├── Input loop
+    ├── Command routing
+    └── Cleanup on exit
 ```
 
 ---
 
 ## 🎯 Best Practices
 
-1. **Luôn check status trước khi start:**
-   ```bash
-   python manage.py status
-   python manage.py start
-   ```
+### 1. Always check status before start
+```
+➤ status
+➤ start
+```
 
-2. **Stop services khi không dùng:**
-   ```bash
-   python manage.py stop
-   ```
+### 2. Stop cleanly before exit
+```
+➤ stop    # Explicit stop
+➤ exit    # Or just exit (auto-stop)
+```
 
-3. **Xem logs khi debug:**
-   ```bash
-   python manage.py logs backend
-   python manage.py logs frontend
-   ```
+### 3. Keep one manage.py window open
+Dễ control hơn việc mở nhiều terminal
 
-4. **Clean định kỳ (1 tuần/lần):**
-   ```bash
-   python manage.py clean
-   python manage.py install
-   ```
+### 4. Use status command regularly
+Để biết service nào đang chạy
 
-5. **Backup .env trước khi clean:**
-   ```bash
-   cp backend/.env backend/.env.backup
-   python manage.py clean
-   ```
+### 5. Manual kill if needed
+Nếu script không stop được, manually kill processes
+
+---
+
+## 🆚 Comparison
+
+### ❌ Before (Manual)
+
+**Start:**
+```bash
+# Terminal 1
+cd backend
+npm run dev
+
+# Terminal 2
+cd frontend
+npm run dev
+```
+
+**Stop:**
+- Ctrl+C ở cả 2 terminals
+- Dễ quên terminal nào
+
+**Status:**
+- Phải nhớ terminal nào là gì
+- Không có visual status
+
+### ✅ After (With manage.py)
+
+**Start:**
+```bash
+python manage.py
+➤ start
+```
+
+**Stop:**
+```
+➤ stop
+```
+
+**Status:**
+```
+➤ status
+📊 Trạng thái:
+   Backend:  🟢 Running
+   Frontend: 🟢 Running
+```
+
+**Benefits:**
+- ✅ Single terminal
+- ✅ Clear status indicators
+- ✅ Easy start/stop/restart
+- ✅ Auto-detect npm scripts
+- ✅ Safe shutdown on exit
 
 ---
 
 ## 📞 Support
 
-Nếu gặp vấn đề:
+### Lỗi thường gặp:
 
-1. Check logs: `python manage.py logs backend`
-2. Check status: `python manage.py status`
-3. Restart: `python manage.py restart`
-4. Clean install: `python manage.py clean && python manage.py install`
+1. **Port in use:** Kill process trên port 5000 và 5173
+2. **Process không stop:** Manual kill với PID
+3. **Script không tìm thấy folder:** Chạy ở root directory
+
+### Debug:
+
+1. Check status: `➤ status`
+2. Stop và start lại: `➤ stop` → `➤ start`
+3. Xem logs trong terminal của processes
+4. Manual kill nếu cần
+
+---
+
+## ⌨️ Keyboard Shortcuts
+
+- **Ctrl+C**: Interrupt & exit (auto stop processes)
+- **Enter** (empty): Skip command
+- **Up/Down arrows**: Command history (if terminal supports)
+
+---
+
+## 🎊 Example Session
+
+```bash
+$ python manage.py
+
+=======================================================
+🧭 PRODUCTIVITY TRACKER - PROJECT MANAGER
+=======================================================
+📝 Lệnh:
+   start   - Khởi động projects
+   stop    - Dừng projects
+   status  - Xem trạng thái
+   exit    - Thoát
+=======================================================
+
+➤ status
+
+📊 Trạng thái:
+   Backend:  🔴 Stopped
+   Frontend: 🔴 Stopped
+
+➤ start
+
+🚀 Đang khởi động projects...
+
+▶  Backend: npm run dev
+▶  Frontend: npm run dev
+
+✅ Projects đang chạy!
+   Backend:  http://localhost:5000
+   Frontend: http://localhost:5173
+
+➤ status
+
+📊 Trạng thái:
+   Backend:  🟢 Running
+   Frontend: 🟢 Running
+
+➤ stop
+
+🛑 Đang dừng...
+
+✔  Backend dừng
+✔  Frontend dừng
+✅ Đã dừng hết.
+
+➤ exit
+👋 Bye!
+```
+
+---
+
+## 🎁 Bonus: Code Explanation
+
+### Why Interactive Shell?
+
+**Advantages:**
+- ✅ Đơn giản hơn CLI arguments
+- ✅ Giữ state (processes) trong session
+- ✅ Dễ dùng cho người mới
+- ✅ Clear visual feedback
+- ✅ Ít code hơn
+
+**vs CLI Arguments:**
+```bash
+# CLI way (complex)
+python manage.py start backend
+python manage.py stop all
+
+# Interactive way (simple)
+python manage.py
+➤ start
+➤ stop
+```
+
+### Global Variables
+
+```python
+frontend_process = None
+backend_process = None
+running = True
+```
+
+**Why global?**
+- Shared state giữa các functions
+- Persist qua commands trong session
+- Cleanup on exit
 
 ---
 
 **Happy coding! 🚀**
+
+Script này giúp bạn quản lý dự án đơn giản và hiệu quả hơn nhiều!
