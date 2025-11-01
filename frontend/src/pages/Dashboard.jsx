@@ -9,6 +9,7 @@ import TaskList from '../components/TaskList';
 import AnalyticsPanel from '../components/AnalyticsPanel';
 import AddTaskPanel from '../components/AddTaskPanel';
 import ChatbotPanel from '../components/ChatbotPanel';
+import TaskChartPanel from '../components/TaskChartPanel';
 
 const Dashboard = () => {
   const { user, logout } = useAuth();
@@ -156,6 +157,9 @@ const Dashboard = () => {
 
             {/* Heatmap */}
             <Heatmap year={currentYear} month={currentMonth} onDateClick={handleDateClick} />
+
+            {/* Task Chart Panel */}
+            <TaskChartPanel />
 
             {/* Task List */}
             <TaskList tasks={tasks} onTaskUpdate={handleTaskUpdate} />

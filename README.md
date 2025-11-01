@@ -22,6 +22,16 @@ Productivity Tracker là một ứng dụng quản lý thời gian và công vi�
 - Biểu đồ xu hướng năng suất
 - Weekly Insights: Ngày hiệu quả nhất, giờ làm việc cao nhất, chuỗi ngày duy trì
 
+### 📈 Biểu đồ phân bố công việc (Task Chart Panel)
+- Biểu đồ cột trực quan theo 7 ngày gần đây
+- 4 chế độ xem khác nhau:
+  * Theo Ưu tiên (Thấp, Trung bình, Cao)
+  * Theo Phân loại (Công việc, Cá nhân, Sức khỏe, Học tập, Khác)
+  * Theo Độ khó (Mức 1-5)
+  * Theo Trạng thái (Hoàn thành, Đang làm, Chờ)
+- Thống kê tổng quan: Tổng tasks, Hoàn thành, Đang làm, Chưa bắt đầu
+- Giúp phân tích xu hướng và cân đối khối lượng công việc
+
 ### ➕ Thêm công việc mới
 - Form đầy đủ: tiêu đề, mô tả, thời gian, phân loại
 - Đánh giá độ khó và mức độ tập trung (1-5)
