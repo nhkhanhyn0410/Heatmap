@@ -27,11 +27,12 @@ Productivity Tracker là một ứng dụng quản lý thời gian và công vi�
 - Đánh giá độ khó và mức độ tập trung (1-5)
 - Có thể đánh dấu hoàn thành ngay khi tạo
 
-### 🤖 Chatbot hỗ trợ thông minh
-- Tích hợp AI chatbot để tư vấn năng suất
-- Phân tích dữ liệu cá nhân (với sự cho phép)
-- Gợi ý cải thiện hiệu suất làm việc
-- Trả lời câu hỏi về quản lý thời gian
+### 🤖 Chatbot hỗ trợ thông minh (DeepSeek AI)
+- Tích hợp DeepSeek AI để tư vấn năng suất
+- Phân tích dữ liệu cá nhân tự động (7 ngày gần nhất)
+- Gợi ý cải thiện hiệu suất làm việc dựa trên dữ liệu thực
+- Trả lời câu hỏi về quản lý thời gian bằng tiếng Việt
+- Luôn hiển thị cố định bên phải màn hình
 
 ### 🔐 Hệ thống đăng nhập người dùng
 - Đăng ký/đăng nhập bằng email + password
@@ -119,10 +120,17 @@ GOOGLE_CLIENT_SECRET=your-google-client-secret
 MICROSOFT_CLIENT_ID=your-microsoft-client-id
 MICROSOFT_CLIENT_SECRET=your-microsoft-client-secret
 
-# Chatbot API (tùy chọn)
-CHATBOT_API_URL=https://api.chatbot-service.com
-CHATBOT_API_KEY=your-api-key
+# DeepSeek AI API (BẮT BUỘC cho Chatbot)
+DEEPSEEK_API_URL=https://api.deepseek.com/v1
+DEEPSEEK_API_KEY=your-deepseek-api-key
+DEEPSEEK_MODEL=deepseek-chat
 ```
+
+**Lưu ý quan trọng về DeepSeek API:**
+1. Đăng ký tài khoản tại: https://platform.deepseek.com/
+2. Tạo API key trong Dashboard
+3. Copy API key vào file `.env`
+4. DeepSeek API có giá rất rẻ (~$0.14/1M tokens) và chất lượng tốt
 
 ### Frontend Environment Variables (.env)
 ```env

@@ -20,7 +20,6 @@ const Dashboard = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
-  const [showChatbot, setShowChatbot] = useState(false);
 
   useEffect(() => {
     loadTodayTasks();
@@ -95,13 +94,6 @@ const Dashboard = () => {
 
             <div className="flex items-center gap-4">
               <button
-                onClick={() => setShowChatbot(!showChatbot)}
-                className="px-4 py-2 text-sm font-medium text-primary-700 hover:bg-primary-50 rounded-lg transition"
-              >
-                {showChatbot ? 'Ẩn Chatbot' : 'Hiện Chatbot'}
-              </button>
-
-              <button
                 onClick={() => setIsAddTaskOpen(true)}
                 className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition"
               >
@@ -140,46 +132,44 @@ const Dashboard = () => {
           </p>
         </div>
 
-        <div className={`grid ${showChatbot ? 'grid-cols-1 lg:grid-cols-3' : 'grid-cols-1'} gap-6`}>
-          {/* Main content */}
-          <div className={showChatbot ? 'lg:col-span-2' : 'col-span-1'}>
-            <div className="space-y-6">
-              {/* Month Navigation */}
-              <div className="flex items-center justify-between bg-white rounded-xl shadow-md px-6 py-4">
-                <button
-                  onClick={handlePrevMonth}
-                  className="px-4 py-2 text-primary-600 font-medium hover:bg-primary-50 rounded-lg transition"
-                >
-                  ← Tháng trước
-                </button>
-                <h3 className="text-lg font-bold text-gray-800">
-                  Tháng {currentMonth}/{currentYear}
-                </h3>
-                <button
-                  onClick={handleNextMonth}
-                  className="px-4 py-2 text-primary-600 font-medium hover:bg-primary-50 rounded-lg transition"
-                >
-                  Tháng sau →
-                </button>
-              </div>
-
-              {/* Heatmap */}
-              <Heatmap year={currentYear} month={currentMonth} onDateClick={handleDateClick} />
-
-              {/* Analytics */}
-              <AnalyticsPanel />
-
-              {/* Task List */}
-              <TaskList tasks={tasks} onTaskUpdate={handleTaskUpdate} />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Main content - Left side (2/3) */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Month Navigation */}
+            <div className="flex items-center justify-between bg-white rounded-xl shadow-md px-6 py-4">
+              <button
+                onClick={handlePrevMonth}
+                className="px-4 py-2 text-primary-600 font-medium hover:bg-primary-50 rounded-lg transition"
+              >
+                ← Tháng trước
+              </button>
+              <h3 className="text-lg font-bold text-gray-800">
+                Tháng {currentMonth}/{currentYear}
+              </h3>
+              <button
+                onClick={handleNextMonth}
+                className="px-4 py-2 text-primary-600 font-medium hover:bg-primary-50 rounded-lg transition"
+              >
+                Tháng sau →
+              </button>
             </div>
+
+            {/* Heatmap */}
+            <Heatmap year={currentYear} month={currentMonth} onDateClick={handleDateClick} />
+
+            {/* Task List */}
+            <TaskList tasks={tasks} onTaskUpdate={handleTaskUpdate} />
+
+            {/* Analytics */}
+            <AnalyticsPanel />
           </div>
 
-          {/* Chatbot Panel */}
-          {showChatbot && (
-            <div className="lg:col-span-1">
+          {/* Chatbot Panel - Right side (1/3) - Always visible */}
+          <div className="lg:col-span-1">
+            <div className="sticky top-24">
               <ChatbotPanel />
             </div>
-          )}
+          </div>
         </div>
       </main>
 

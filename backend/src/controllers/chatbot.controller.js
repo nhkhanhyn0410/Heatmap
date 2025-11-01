@@ -9,7 +9,10 @@ export const sendMessage = async (req, res, next) => {
   try {
     const { message, includeContext } = req.body;
 
-    let context = {};
+    // Build system message with context
+    let systemMessage = `Bạn là một trợ lý AI chuyên về năng suất và quản lý thời gian.
+Bạn giúp người dùng phân tích hiệu suất làm việc, đưa ra lời khuyên về quản lý thời gian,
+và cung cấp các gợi ý để cải thiện năng suất. Hãy trả lời bằng tiếng Việt một cách thân thiện và hữu ích.`;
 
     // If user wants to include their productivity context
     if (includeContext) {
@@ -23,68 +26,76 @@ export const sendMessage = async (req, res, next) => {
         date: { $gte: startDate, $lte: endDate }
       });
 
-      const totalTasks = activities.reduce((sum, a) => sum + a.completedTasks, 0);
-      const totalHours = activities.reduce((sum, a) => sum + a.totalHours, 0);
-      const avgProductivity = activities.length > 0
-        ? activities.reduce((sum, a) => sum + a.productivityScore, 0) / activities.length
-        : 0;
+      if (activities.length > 0) {
+        const totalTasks = activities.reduce((sum, a) => sum + a.completedTasks, 0);
+        const totalHours = activities.reduce((sum, a) => sum + a.totalHours, 0);
+        const avgProductivity = activities.reduce((sum, a) => sum + a.productivityScore, 0) / activities.length;
 
-      context = {
-        weeklyStats: {
-          totalTasks,
-          totalHours: Math.round(totalHours * 10) / 10,
-          avgProductivity: Math.round(avgProductivity)
-        },
-        recentActivities: activities.map(a => ({
-          date: a.date.toISOString().split('T')[0],
-          tasks: a.completedTasks,
-          hours: a.totalHours,
-          score: a.productivityScore
-        }))
-      };
+        const contextInfo = `
+
+Dữ liệu năng suất 7 ngày gần đây của người dùng:
+- Tổng công việc hoàn thành: ${totalTasks}
+- Tổng giờ làm việc: ${Math.round(totalHours * 10) / 10}h
+- Điểm năng suất trung bình: ${Math.round(avgProductivity)}%
+
+Chi tiết từng ngày:
+${activities.map(a => `- ${a.date.toISOString().split('T')[0]}: ${a.completedTasks} công việc, ${a.totalHours}h, điểm ${a.productivityScore}%`).join('\n')}
+
+Hãy sử dụng dữ liệu này để đưa ra phân tích và lời khuyên cụ thể.`;
+
+        systemMessage += contextInfo;
+      }
     }
 
-    // Prepare request to chatbot API
-    const chatbotRequest = {
-      message,
-      context,
-      userId: req.user.id
-    };
-
-    // TODO: Replace with actual chatbot API endpoint
-    // For now, return a mock response
-    const mockResponse = {
-      response: "This is a mock chatbot response. To enable real chatbot functionality, configure the CHATBOT_API_URL and CHATBOT_API_KEY in your .env file.",
-      suggestions: [
-        "How can I improve my productivity?",
-        "What's my best performing day this week?",
-        "Give me tips for time management"
-      ]
-    };
-
-    // Uncomment when chatbot API is configured
-    /*
-    const chatbotResponse = await axios.post(
-      process.env.CHATBOT_API_URL,
-      chatbotRequest,
+    // Call DeepSeek API
+    const deepseekResponse = await axios.post(
+      `${process.env.DEEPSEEK_API_URL}/chat/completions`,
+      {
+        model: process.env.DEEPSEEK_MODEL || 'deepseek-chat',
+        messages: [
+          {
+            role: 'system',
+            content: systemMessage
+          },
+          {
+            role: 'user',
+            content: message
+          }
+        ],
+        temperature: 0.7,
+        max_tokens: 1000
+      },
       {
         headers: {
-          'Authorization': `Bearer ${process.env.CHATBOT_API_KEY}`,
+          'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`,
           'Content-Type': 'application/json'
         }
       }
     );
-    */
+
+    const aiResponse = deepseekResponse.data.choices[0].message.content;
 
     res.status(200).json({
       success: true,
-      data: mockResponse // Replace with chatbotResponse.data when API is configured
+      data: {
+        response: aiResponse,
+        suggestions: [] // Will be populated by getSuggestions endpoint
+      }
     });
   } catch (error) {
-    console.error('Chatbot API error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error communicating with chatbot service'
+    console.error('DeepSeek API error:', error.response?.data || error.message);
+
+    // Fallback response if API fails
+    res.status(200).json({
+      success: true,
+      data: {
+        response: 'Xin lỗi, tôi đang gặp sự cố kết nối. Vui lòng kiểm tra cấu hình DEEPSEEK_API_KEY trong file .env hoặc thử lại sau.',
+        suggestions: [
+          'Cách cải thiện năng suất làm việc?',
+          'Mẹo quản lý thời gian hiệu quả?',
+          'Phân tích hiệu suất tuần này'
+        ]
+      }
     });
   }
 };
