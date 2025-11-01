@@ -149,6 +149,35 @@ VITE_API_URL=http://localhost:5000/api
 
 ## 🚀 Sử dụng
 
+### Cách 1: Sử dụng Management Script (Khuyến nghị) 🎯
+
+Script `manage.py` giúp quản lý dự án dễ dàng hơn với logging và process management.
+
+```bash
+# Cài đặt dependencies
+python manage.py install
+
+# Khởi động tất cả (backend + frontend)
+python manage.py start
+
+# Kiểm tra trạng thái
+python manage.py status
+
+# Dừng tất cả
+python manage.py stop
+
+# Xem logs
+python manage.py logs backend
+python manage.py logs frontend
+
+# Xem tất cả lệnh
+python manage.py help
+```
+
+**Chi tiết:** Xem [MANAGE_GUIDE.md](MANAGE_GUIDE.md)
+
+### Cách 2: Manual (Truyền thống)
+
 1. Khởi động MongoDB:
 ```bash
 mongod
