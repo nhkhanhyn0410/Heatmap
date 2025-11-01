@@ -180,8 +180,6 @@ python manage.py
 - ✅ Graceful shutdown
 - ✅ Process management
 
-**Chi tiết:** Xem [MANAGE_GUIDE.md](MANAGE_GUIDE.md)
-
 ### Cách 2: Manual (Truyền thống)
 
 1. Khởi động MongoDB:
